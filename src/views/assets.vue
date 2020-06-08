@@ -4,6 +4,7 @@
       <label>
         信息系统
         <select v-model="tableForm.systemId">
+          <option value="全部">全部</option>
           <option
             v-for="(item, index) in systemListByUser"
             :key="index"
@@ -18,7 +19,15 @@
       </label>
       <label>
         设备类型
-        <input type="text" v-model="tableForm.deviceSort" />
+        <select v-model="tableForm.deviceSort">
+          <option value="全部">全部</option>
+          <option
+            v-for="(item, index) in deviceTypeList"
+            :key="index"
+            :value="item.key"
+            >{{ item.value }}</option
+          >
+        </select>
       </label>
       <label>
         设备厂家/型号
@@ -32,14 +41,22 @@
       <baseCol prop="systemName" label="信息系统" />
       <baseCol prop="importName" label="导入人" />
       <baseCol prop="deviceName" label="设备名称" />
-      <baseCol prop="deviceSort" label="设备类型" />
+      <baseCol prop="deviceSort" label="设备类型">
+        <template #button="props">
+          {{
+            deviceTypeList
+              .filter((item) => item.key === props.row.deviceSort)
+              .map((item) => item.value)[0]
+          }}
+        </template>
+      </baseCol>
       <baseCol prop="deviceType" label="设备厂家/型号" />
       <baseCol prop="position" label="机房位置" />
       <baseCol prop="cabinetNumber" label="机柜编号" />
       <baseCol prop="systemVersion" label="操作系统版本" />
       <baseCol prop="midVersion" label="中间件版本" />
       <baseCol prop="dbVersion" label="数据库版本" />
-      <baseCol prop="ipAddress" label="私网IP地址" />
+      <baseCol prop="ipAddress" label="IP地址" />
       <baseCol label="操作">
         <template #button="props">
           <button v-if="props.row.editVisible" @click="openDialog(props.row)">
@@ -135,7 +152,7 @@
           <input type="text" v-model="form.ipAddress" disabled />
         </baseFormItem>
         <baseFormItem label="端口">
-          <input type="text" v-model="form.port" />
+          <input type="text" v-model="form.port" disabled />
         </baseFormItem>
         <baseFormItem label="应用WEB URL地址">
           <input type="text" v-model="form.url" />
